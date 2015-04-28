@@ -27,8 +27,15 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 	console.log("wiimote connected");
 	console.log("point your browser at http://localhost:8888");
 
-	wiimote.requestStatus();
+	wiimote.led(1, true);
 
+	wiimote.rumble(true);
+	setTimeout(function() {
+		wiimote.rumble(false);
+	}, 1000);
+
+	wiimote.requestStatus();
+	
 	wiimote.on("button", function(data) {
 		io.sockets.emit("button", data);
 	});
@@ -59,6 +66,22 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 		io.sockets.emit("accelerometer", data);
 	});
 
+	wiimote.on("nunchuk", function(data) {
+		io.sockets.emit("nunchuk", data);
+	});
+
+	wiimote.on("classic", function(data) {
+		io.sockets.emit("classic", data);
+	});
+
+	wiimote.on("balance", function(data) {
+		io.sockets.emit("balance", data);
+	});
+
+	wiimote.on("motionplus", function(data) {
+		io.sockets.emit("motionplus", data);
+	});
+
 	wiimote.on("status", function(data) {
 		io.sockets.emit("status", data);
 	});
@@ -71,10 +94,9 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 		io.sockets.emit("disconnect", data);
 	});
 
-	// Turn on reporting for the following. Each one consumes more battery, so only use when needed
 	wiimote.acc(false);
 	wiimote.button(true);
-	wiimote.ext(false);
+	wiimote.ext(true);
 	wiimote.ir(true);
 
 	io.sockets.emit("wiimote_connected");

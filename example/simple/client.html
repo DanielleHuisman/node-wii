@@ -5,81 +5,80 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Test</title>
     <style>
-    #wiimote {
-    	background-image: url('wiimote-land.xcf-Main.png');
-    	width:  784px;
-    	height: 192px;
-    	repeat: no-repeat;
-    	position:relative;
-    }
-    #wiimote div {
-    	position: absolute;
-    	display: none;
-    }
-    #wiimote #plus {
-	    background-image: url('wiimote-land.xcf-Plus.png');
-		left: 360px; top: 27px;
-    	width: 32px; height: 32px;
-    }
-    #wiimote #minus {
-	    background-image: url('wiimote-land.xcf-Minus.png');
-		left: 360px; top: 132px;
-    	width: 31px; height: 30px;
-    }
-    #wiimote #up {
-	    background-image: url('wiimote-land.xcf-Up.png');
-		left: 84px; top: 78px;
-    	width: 35px; height: 33px;
-    }
-    #wiimote #down {
-	    background-image: url('wiimote-land.xcf-Down.png');
-		left: 147px; top: 78px;
-    	width: 33px; height: 33px;
-    }
-    #wiimote #left {
-	    background-image: url('wiimote-land.xcf-Left.png');
-		left: 116px; top: 108px;
-    	width: 33px; height: 34px;
-    }
-    #wiimote #right {
-	    background-image: url('wiimote-land.xcf-Right.png');
-		left: 116px; top: 46px;
-    	width: 34px; height: 34px;
-    }
-    #wiimote #home {
-	    background-image: url('wiimote-land.xcf-Home.png');
-		left: 360px; top: 78px;
-    	width: 32px; height: 32px;
-    }
-    #wiimote #a {
-	    background-image: url('wiimote-land.xcf-A.png');
-		left: 218px; top: 64px;
-    	width: 60px; height: 59px;
-    }
-    #wiimote #one {
-	    background-image: url('wiimote-land.xcf-One.png');
-		left: 554px; top: 74px;
-    	width: 41px; height: 42px;
-    }
+	    #wiimote {
+	    	background-image: url("wiimote-land.xcf-Main.png");
+	    	width:  784px;
+	    	height: 192px;
+	    	repeat: no-repeat;
+	    	position:relative;
+	    }
+	    #wiimote div {
+	    	position: absolute;
+	    	display: none;
+	    }
+	    #wiimote #plus {
+		    background-image: url("wiimote-land.xcf-Plus.png");
+			left: 360px; top: 27px;
+	    	width: 32px; height: 32px;
+	    }
+	    #wiimote #minus {
+		    background-image: url("wiimote-land.xcf-Minus.png");
+			left: 360px; top: 132px;
+	    	width: 31px; height: 30px;
+	    }
+	    #wiimote #up {
+		    background-image: url("wiimote-land.xcf-Up.png");
+			left: 84px; top: 78px;
+	    	width: 35px; height: 33px;
+	    }
+	    #wiimote #down {
+		    background-image: url("wiimote-land.xcf-Down.png");
+			left: 147px; top: 78px;
+	    	width: 33px; height: 33px;
+	    }
+	    #wiimote #left {
+		    background-image: url("wiimote-land.xcf-Left.png");
+			left: 116px; top: 108px;
+	    	width: 33px; height: 34px;
+	    }
+	    #wiimote #right {
+		    background-image: url("wiimote-land.xcf-Right.png");
+			left: 116px; top: 46px;
+	    	width: 34px; height: 34px;
+	    }
+	    #wiimote #home {
+		    background-image: url("wiimote-land.xcf-Home.png");
+			left: 360px; top: 78px;
+	    	width: 32px; height: 32px;
+	    }
+	    #wiimote #a {
+		    background-image: url("wiimote-land.xcf-A.png");
+			left: 218px; top: 64px;
+	    	width: 60px; height: 59px;
+	    }
+	    #wiimote #one {
+		    background-image: url("wiimote-land.xcf-One.png");
+			left: 554px; top: 74px;
+	    	width: 41px; height: 42px;
+	    }
 
-    #wiimote #two {
-	    background-image: url('wiimote-land.xcf-Two.png');
-		left: 622px; top: 74px;
-    	width: 42px; height: 42px;
-    }
-    
-    #wiimote-ir {
-    	background: #000;
-    	width:  1024px;
-    	height: 768px;
-    	position:relative;
-    }
-    
-    #wiimote-ir .point {
-    	position: absolute;
-		background: #fff;
-    }
-
+	    #wiimote #two {
+		    background-image: url("wiimote-land.xcf-Two.png");
+			left: 622px; top: 74px;
+	    	width: 42px; height: 42px;
+	    }
+	    
+	    #wiimote-ir {
+	    	background: #000;
+	    	width:  1024px;
+	    	height: 768px;
+	    	position:relative;
+	    }
+	    
+	    #wiimote-ir .point {
+	    	position: absolute;
+			background: #fff;
+	    }
     </style>
   </head>
 
@@ -146,19 +145,19 @@
 	    		settings = $.extend({}, defaults, options);
 
 	    		settings.size = parseInt(settings.size) || 40;
-	    		settings.radius = (settings.size/2) + 'px';
+	    		settings.radius = (settings.size/2) + "px";
 
 	    		return this.each(function(){
 	    			var $this = $(this);
 
 	    			$this.css({
-	    				display: 'block',
-	    				width: settings.size + 'px',
-	    				height: settings.size + 'px'
+	    				display: "block",
+	    				width: settings.size + "px",
+	    				height: settings.size + "px"
 	    			});
 
-	    			$this.css('-moz-border-radius', settings.radius);
-	    			$this.css('-webkit-border-radius', settings.radius);
+	    			$this.css("-moz-border-radius", settings.radius);
+	    			$this.css("-webkit-border-radius", settings.radius);
 	    		});
 	    	}
 
@@ -167,23 +166,23 @@
     </script>
     <script>
 	    var buttonMap = {};
-	    buttonMap[wiimote.BTN_1] = '#one';
- 	    buttonMap[wiimote.BTN_2] = '#two';
-	    buttonMap[wiimote.BTN_A] = '#a';
- 	    buttonMap[wiimote.BTN_B] = '#b';
-  	    buttonMap[wiimote.BTN_MINUS] = '#minus';
- 	    buttonMap[wiimote.BTN_PLUS]  = '#plus';
-		buttonMap[wiimote.BTN_HOME]  = '#home';
-		buttonMap[wiimote.BTN_LEFT]  = '#left';
-		buttonMap[wiimote.BTN_RIGHT] = '#right';
-		buttonMap[wiimote.BTN_UP]    = '#up';
-		buttonMap[wiimote.BTN_DOWN]  = '#down';
+	    buttonMap[wiimote.BTN_1] = "#one";
+ 	    buttonMap[wiimote.BTN_2] = "#two";
+	    buttonMap[wiimote.BTN_A] = "#a";
+ 	    buttonMap[wiimote.BTN_B] = "#b";
+  	    buttonMap[wiimote.BTN_MINUS] = "#minus";
+ 	    buttonMap[wiimote.BTN_PLUS]  = "#plus";
+		buttonMap[wiimote.BTN_HOME]  = "#home";
+		buttonMap[wiimote.BTN_LEFT]  = "#left";
+		buttonMap[wiimote.BTN_RIGHT] = "#right";
+		buttonMap[wiimote.BTN_UP]    = "#up";
+		buttonMap[wiimote.BTN_DOWN]  = "#down";
 
 	    var socket = io.connect();
-	    socket.on( 'button', function( data ) {
-	    	console.log('button', data);
-	    	for (btn in buttonMap) {
-	    		if ((data & btn) != 0) {
+	    socket.on("button", function(data) {
+	    	console.log("button", data);
+	    	for(btn in buttonMap) {
+	    		if((data & btn) != 0) {
 	    			$(buttonMap[btn]).show();
 	    		} else {
 	    			$(buttonMap[btn]).hide();
@@ -191,35 +190,56 @@
 	    	}
 	    });
 
-	    $('#wiimote-ir div').jCircle().hide();
+	    $("#wiimote-ir div").jCircle().hide();
 
-	    socket.on( 'ir', function( data ) {
-	    	console.log('ir', data);
-	    	$('#wiimote-ir div').each( function(i, p) {
+	    socket.on("ir", function(data) {
+	    	console.log("ir", data);
+	    	$("#wiimote-ir div").each( function(i, p) {
 	    		var d = data[i];
-	    		if (d && d['size'] > 0) {
-	    			$(this).css({ left: d['x'], top: d['y'] })
-	    			 .jCircle({size: d['size'] * 5});
+	    		if (d && d["size"] > 0) {
+	    			$(this).css({ left: d["x"], top: d["y"] })
+	    			 .jCircle({size: d["size"] * 5});
 	    		} else {
 	    			$(this).hide();
 	    		}
 	    	});
 	    });
 
-	    socket.on( 'accelerometer', function( data ) {
-	    	console.log('accelerometer', data);
+	    socket.on("accelerometer", function(data) {
+	    	console.log("accelerometer", data);
 	    });
 
-	    socket.on( 'status', function( data ) {
-	    	console.log('status', data);
+	    socket.on("nunchuk", function(data) {
+	    	if(data.buttons !== 0) {
+	    		console.log("nunchuk", data.buttons);
+	    	}
+	    	if(data.stick && (Math.abs(140 - data.stick.x) > 2 || Math.abs(120 - data.stick.y) > 2)) {
+	    		console.log("nunchuk", data.stick.x + ", " + data.stick.y);
+	    	}
 	    });
 
-	    socket.on( 'connect', function( data ) {
-	    	console.log('connect', data);
+	    socket.on("classic", function(data) {
+	    	console.log("classic", data);
+	    });
+
+	    socket.on("balance", function(data) {
+	    	console.log("balance", data);
+	    });
+
+	    socket.on("motionplus", function(data) {
+	    	console.log("motionplus", data);
+	    });
+
+	    socket.on("status", function(data) {
+	    	console.log("status", data);
+	    });
+
+	    socket.on("connect", function(data) {
+	    	console.log("connect", data);
 	    });
 	    
-	    socket.on( 'disconnect', function( data ) {
-	    	console.log('disconnect', data);
+	    socket.on("disconnect", function(data) {
+	    	console.log("disconnect", data);
 	    });
     </script>
   </body>
