@@ -1,9 +1,15 @@
 {
   "targets": [
     {
-      "target_name": "nodewii",
-      "sources": [ "src/base.cc", "src/wiimote.cc" ],
-      "libraries": [ "-lcwiid", "-lbluetooth" ]
+      "target_name": "wii",
+      "sources": [
+      	"src/base.cc",
+      	"src/wiimote.cc"
+      ],
+      "libraries": [
+      	"-lcwiid",
+      	"-lbluetooth"
+      ]
     }
   ]
 }

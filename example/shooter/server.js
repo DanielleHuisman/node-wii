@@ -1,4 +1,4 @@
-var wii = require("../../node-wii");
+var wii = require("../../wii");
 var app = require("express").createServer();
 var io = require("socket.io");
 var wiimote = new wii.WiiMote();

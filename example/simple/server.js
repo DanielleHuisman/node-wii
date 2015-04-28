@@ -1,4 +1,4 @@
-var wii = require("../../node-wii");
+var wii = require("../../wii");
 var express = require("express");
 var app = express();
 var http = require("http");
