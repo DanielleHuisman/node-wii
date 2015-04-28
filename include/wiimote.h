@@ -8,7 +8,7 @@
 
 //#define ENABLE_DEBUG
 #ifdef ENABLE_DEBUG
-  #define DEBUG_HEADER fprintf(stderr, "node-wii [%s:%s() %d]: ", __FILE__, __FUNCTION__, __LINE__);
+  #define DEBUG_HEADER fprintf(stderr, "wii [%s:%s() %d]: ", __FILE__, __FUNCTION__, __LINE__);
   #define DEBUG_FOOTER fprintf(stderr, "\n");
   #define DEBUG(STRING) DEBUG_HEADER fprintf(stderr, "%s", STRING); DEBUG_FOOTER
   #define DEBUG_OPT(...) DEBUG_HEADER fprintf(stderr, __VA_ARGS__); DEBUG_FOOTER
@@ -43,6 +43,21 @@ class WiiMote : public ObjectWrap {
      *   Used to dispatch nunchuk extension event.
      */
     static v8::Persistent<v8::String> nunchuk_event;
+    /**
+     * Variable: classic_event
+     *   Used to dispatch nunchuk extension event.
+     */
+    static v8::Persistent<v8::String> classic_event;
+    /**
+     * Variable: balance_event
+     *   Used to dispatch nunchuk extension event.
+     */
+    static v8::Persistent<v8::String> balance_event;
+    /**
+     * Variable: motionplus_event
+     *   Used to dispatch nunchuk extension event.
+     */
+    static v8::Persistent<v8::String> motionplus_event;
     /**
      * Variable: buttondown_event
      *   Used to dispatch buttondown event.
@@ -81,6 +96,7 @@ class WiiMote : public ObjectWrap {
 
     int Rumble(bool on);
     int Led(int index, bool on);
+    int RequestStatus();
     int Reporting(int mode, bool on);
 
   protected:
@@ -130,12 +146,16 @@ class WiiMote : public ObjectWrap {
     void HandleButtonMessage (struct timespec *ts, cwiid_btn_mesg * msg);
     void HandleErrorMessage  (struct timespec *ts, cwiid_error_mesg * msg);
     void HandleNunchukMessage(struct timespec *ts, cwiid_nunchuk_mesg * msg);
+    void HandleClassicMessage(struct timespec *ts, cwiid_classic_mesg * msg);
+    void HandleBalanceMessage(struct timespec *ts, cwiid_balance_mesg * msg);
+    void HandleMotionPlusMessage(struct timespec *ts, cwiid_motionplus_mesg * msg);
     void HandleIRMessage     (struct timespec *ts, cwiid_ir_mesg * msg);
     void HandleStatusMessage (struct timespec *ts, cwiid_status_mesg * msg);
 
     // The following methods turn things on and off
     static v8::Handle<v8::Value> Rumble(const v8::Arguments& args);
     static v8::Handle<v8::Value> Led(const v8::Arguments& args);
+    static v8::Handle<v8::Value> RequestStatus(const v8::Arguments& args);
     static v8::Handle<v8::Value> IrReporting(const v8::Arguments& args);
     static v8::Handle<v8::Value> AccReporting(const v8::Arguments& args);
     static v8::Handle<v8::Value> ExtReporting(const v8::Arguments& args);

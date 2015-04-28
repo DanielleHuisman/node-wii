@@ -11,7 +11,7 @@ server.listen(8888);
 
 // Setup the Express framework
 app.get("/", function(req, res) {
-	res.sendfile(__dirname + "/client.html");
+	res.sendFile(__dirname + "/client.html");
 });
 
 app.use(express.static(__dirname + "/static"));
@@ -26,6 +26,8 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 	}
 	console.log("wiimote connected");
 	console.log("point your browser at http://localhost:8888");
+
+	wiimote.requestStatus();
 
 	wiimote.on("button", function(data) {
 		io.sockets.emit("button", data);
@@ -80,37 +82,38 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 
 io.sockets.on("connection", function(socket) {
 	console.log("client connect");
-	/*
-	  socket.on( "toggle", function( data ) {
-	    var sensor = data["sensor"];
-	    var value  = data["value"];
 
-		  if (sensor == "rumble") {
-			  // Special case. Disable this in 100ms
-			  wiimote.rumble( true );
+	socket.on("error", function(data) {
+		console.error(data);
+	});
 
-	          setTimeout(function() {
-	            wiimote.rumble( false );
-	          }, 100);
+	socket.on("toggle", function(data) {
+		var sensor = data["sensor"];
+		var value = data["value"];
 
-		  } else if (sensor == "ir") {
-			  wiimote.ir( value );
+		if (sensor == "rumble") {
+			wiimote.rumble(true);
 
-		  } else if (sensor == "button") {
-			  wiimote.button( value );
+			setTimeout(function() {
+				wiimote.rumble(false);
+			}, 1000);
+		} else if (sensor == "ir") {
+			wiimote.ir(value);
+		} else if (sensor == "button") {
+			wiimote.button(value);
+		} else if (sensor == "acc") {
+			wiimote.acc(value);
+		} else if (sensor == "status") {
+			wiimote.requestStatus();
+		}
 
-		  } else if (sensor == "acc") {
-			  wiimote.acc( value );
-		  }
-		  
-		  // Read the state and update all
-		  var state = {
-	        rumble: wiimote.rumble(),
-	        ir:     wiimote.ir(),
-	        button: wiimote.button(),
-	        acc:    wiimote.acc(),
-		  }
-		  io.sockets.emit("toggle", state);
-	  });
-	*/
+		// var state = {
+		// 	rumble: wiimote.rumble(),
+		// 	ir: wiimote.ir(),
+		// 	button: wiimote.button(),
+		// 	acc: wiimote.acc(),
+		// }
+		// io.sockets.emit("toggle", state);
+	});
+
 });

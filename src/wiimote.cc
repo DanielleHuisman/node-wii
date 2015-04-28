@@ -64,6 +64,7 @@ void WiiMote::Initialize (Handle<v8::Object> target) {
 
   NODE_SET_PROTOTYPE_METHOD(constructor_template, "connect", Connect);
   NODE_SET_PROTOTYPE_METHOD(constructor_template, "disconnect", Disconnect);
+  NODE_SET_PROTOTYPE_METHOD(constructor_template, "requestStatus", RequestStatus);
   NODE_SET_PROTOTYPE_METHOD(constructor_template, "rumble", Rumble);
   NODE_SET_PROTOTYPE_METHOD(constructor_template, "led", Led);
   NODE_SET_PROTOTYPE_METHOD(constructor_template, "ir", IrReporting);
@@ -75,7 +76,12 @@ void WiiMote::Initialize (Handle<v8::Object> target) {
   NODE_DEFINE_CONSTANT_NAME(target, "IR_Y_MAX", CWIID_IR_Y_MAX);
   NODE_DEFINE_CONSTANT_NAME(target, "IR_SRC_COUNT", CWIID_IR_SRC_COUNT);
 
+  NODE_DEFINE_CONSTANT_NAME(target, "ACC_MAX", CWIID_ACC_MAX);
   NODE_DEFINE_CONSTANT_NAME(target, "BATTERY_MAX", CWIID_BATTERY_MAX);
+
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_L_STICK_MAX", CWIID_CLASSIC_L_STICK_MAX);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_R_STICK_MAX", CWIID_CLASSIC_R_STICK_MAX);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_LR_MAX", CWIID_CLASSIC_LR_MAX);
 
   NODE_DEFINE_CONSTANT_NAME(target, "BTN_1", CWIID_BTN_1);
   NODE_DEFINE_CONSTANT_NAME(target, "BTN_2", CWIID_BTN_2);
@@ -88,6 +94,25 @@ void WiiMote::Initialize (Handle<v8::Object> target) {
   NODE_DEFINE_CONSTANT_NAME(target, "BTN_RIGHT", CWIID_BTN_RIGHT);
   NODE_DEFINE_CONSTANT_NAME(target, "BTN_UP",    CWIID_BTN_UP);
   NODE_DEFINE_CONSTANT_NAME(target, "BTN_DOWN",  CWIID_BTN_DOWN);
+
+  NODE_DEFINE_CONSTANT_NAME(target, "NUNCHUK_BTN_Z", CWIID_NUNCHUK_BTN_Z);
+  NODE_DEFINE_CONSTANT_NAME(target, "NUNCHUK_BTN_C", CWIID_NUNCHUK_BTN_C);
+
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_UP", CWIID_CLASSIC_BTN_UP);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_LEFT", CWIID_CLASSIC_BTN_LEFT);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_ZR", CWIID_CLASSIC_BTN_ZR);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_X", CWIID_CLASSIC_BTN_X);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_A", CWIID_CLASSIC_BTN_A);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_Y", CWIID_CLASSIC_BTN_Y);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_B", CWIID_CLASSIC_BTN_B);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_ZL", CWIID_CLASSIC_BTN_ZL);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_R", CWIID_CLASSIC_BTN_R);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_PLUS", CWIID_CLASSIC_BTN_PLUS);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_HOME", CWIID_CLASSIC_BTN_HOME);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_MINUS", CWIID_CLASSIC_BTN_MINUS);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_L", CWIID_CLASSIC_BTN_L);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_DOWN", CWIID_CLASSIC_BTN_DOWN);
+  NODE_DEFINE_CONSTANT_NAME(target, "CLASSIC_BTN_RIGHT", CWIID_CLASSIC_BTN_RIGHT);
 
   NODE_DEFINE_CONSTANT_NAME(target, "EXT_NONE",       CWIID_EXT_NONE);
   NODE_DEFINE_CONSTANT_NAME(target, "EXT_NUNCHUK",    CWIID_EXT_NUNCHUK);
@@ -128,6 +153,16 @@ int WiiMote::Disconnect() {
 
     cwiid_close(this->wiimote);
     this->wiimote = NULL;
+  }
+
+  return 0;
+}
+
+int WiiMote::RequestStatus() {
+  assert(this->wiimote != NULL);
+
+  if(cwiid_request_status(this->wiimote)) {
+    return -1;
   }
 
   return 0;
@@ -217,7 +252,80 @@ void WiiMote::HandleErrorMessage(struct timespec *ts, cwiid_error_mesg * msg) {
 }
 
 void WiiMote::HandleNunchukMessage(struct timespec *ts, cwiid_nunchuk_mesg * msg) {
-  // TODO - event "nunchuk"
+  HandleScope scope;
+
+  Local<Object> stick = Object::New();
+  stick->Set(String::NewSymbol("x"), Integer::New(msg->stick[CWIID_X]));
+  stick->Set(String::NewSymbol("y"), Integer::New(msg->stick[CWIID_Y]));
+
+  Local<Object> pos = Object::New();
+  pos->Set(String::NewSymbol("x"), Integer::New(msg->acc[CWIID_X]));
+  pos->Set(String::NewSymbol("y"), Integer::New(msg->acc[CWIID_Y]));
+  pos->Set(String::NewSymbol("z"), Integer::New(msg->acc[CWIID_Z]));
+
+  Local<Object> data = Object::New();
+  data->Set(String::NewSymbol("stick"), stick);
+  data->Set(String::NewSymbol("acc"), pos);
+  data->Set(String::NewSymbol("buttons"), Integer::New(msg->buttons));
+
+  Local<Value> argv[2] = { String::New("nunchuk"), data };
+  MakeCallback(self, "emit", ARRAY_SIZE(argv), argv);
+}
+
+void WiiMote::HandleClassicMessage(struct timespec *ts, cwiid_classic_mesg * msg) {
+  HandleScope scope;
+
+  Local<Object> lstick = Object::New();
+  lstick->Set(String::NewSymbol("x"), Integer::New(msg->l_stick[CWIID_X]));
+  lstick->Set(String::NewSymbol("y"), Integer::New(msg->l_stick[CWIID_Y]));
+
+  Local<Object> rstick = Object::New();
+  rstick->Set(String::NewSymbol("x"), Integer::New(msg->r_stick[CWIID_X]));
+  rstick->Set(String::NewSymbol("y"), Integer::New(msg->r_stick[CWIID_Y]));
+
+  Local<Object> data = Object::New();
+  data->Set(String::NewSymbol("leftStick"), lstick);
+  data->Set(String::NewSymbol("rightStick"), rstick);
+  data->Set(String::NewSymbol("left"), Integer::New(msg->l));
+  data->Set(String::NewSymbol("right"), Integer::New(msg->r));
+  data->Set(String::NewSymbol("buttons"), Integer::New(msg->buttons));
+
+  Local<Value> argv[2] = { String::New("classic"), data };
+  MakeCallback(self, "emit", ARRAY_SIZE(argv), argv);
+}
+
+void WiiMote::HandleBalanceMessage(struct timespec *ts, cwiid_balance_mesg * msg) {
+  HandleScope scope;
+
+  Local<Object> data = Object::New();
+  data->Set(String::NewSymbol("rightTop"), Integer::New(msg->right_top));
+  data->Set(String::NewSymbol("rightBottom"), Integer::New(msg->right_bottom));
+  data->Set(String::NewSymbol("leftTop"), Integer::New(msg->left_top));
+  data->Set(String::NewSymbol("leftBottom"), Integer::New(msg->left_bottom));
+
+  Local<Value> argv[2] = { String::New("balance"), data };
+  MakeCallback(self, "emit", ARRAY_SIZE(argv), argv);
+}
+
+void WiiMote::HandleMotionPlusMessage(struct timespec *ts, cwiid_motionplus_mesg * msg) {
+  HandleScope scope;
+
+  Local<Object> angle = Object::New();
+  angle->Set(String::NewSymbol("x"), Integer::New(msg->angle_rate[CWIID_X]));
+  angle->Set(String::NewSymbol("y"), Integer::New(msg->angle_rate[CWIID_Y]));
+  angle->Set(String::NewSymbol("z"), Integer::New(msg->angle_rate[CWIID_Z]));
+
+  // Local<Object> speed = Object::New();
+  // speed->Set(String::NewSymbol("x"), Integer::New(msg->low_speed[CWIID_X]));
+  // speed->Set(String::NewSymbol("y"), Integer::New(msg->low_speed[CWIID_Y]));
+  // speed->Set(String::NewSymbol("z"), Integer::New(msg->low_speed[CWIID_Z]));
+
+  Local<Object> data = Object::New();
+  data->Set(String::NewSymbol("angleRate"), angle);
+  //data->Set(String::NewSymbol("lowSpeed"), speed);
+
+  Local<Value> argv[2] = { String::New("motionplus"), data };
+  MakeCallback(self, "emit", ARRAY_SIZE(argv), argv);
 }
 
 void WiiMote::HandleIRMessage(struct timespec *ts, cwiid_ir_mesg * msg) {
@@ -285,10 +393,19 @@ void WiiMote::HandleMessagesAfter(uv_work_t *req, int status) {
         self->HandleErrorMessage(&r->timestamp, (cwiid_error_mesg *)&r->mesgs[i]);
         break;
 
-      case CWIID_MESG_UNKNOWN:
       case CWIID_MESG_CLASSIC:
+        self->HandleClassicMessage(&r->timestamp, (cwiid_classic_mesg *)&r->mesgs[i]);
+        break;
+
       case CWIID_MESG_BALANCE:
+        self->HandleBalanceMessage(&r->timestamp, (cwiid_balance_mesg *)&r->mesgs[i]);
+        break;
+
       case CWIID_MESG_MOTIONPLUS:
+        self->HandleMotionPlusMessage(&r->timestamp, (cwiid_motionplus_mesg *)&r->mesgs[i]);
+        break;
+
+      case CWIID_MESG_UNKNOWN:
       default:
         break;
     }
@@ -423,6 +540,13 @@ Handle<Value> WiiMote::Disconnect(const Arguments& args) {
   return Integer::New(wiimote->Disconnect());
 }
 
+Handle<Value> WiiMote::RequestStatus(const Arguments& args) {
+  HandleScope scope;
+
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+
+  return Integer::New(wiimote->RequestStatus());
+}
 
 Handle<Value> WiiMote::Rumble(const Arguments& args) {
   HandleScope scope;
@@ -456,7 +580,6 @@ Handle<Value> WiiMote::Led(const Arguments& args) {
 
   return Integer::New(wiimote->Led(index, on));
 }
-
 
 Handle<Value> WiiMote::IrReporting(const Arguments& args) {
   HandleScope scope;

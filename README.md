@@ -83,8 +83,10 @@ wiimote.connect("00:00:00:00:00", function(err) {
 
 * connect(address, callback)
 * disconnect()
+* requestStatus()
 * rumble(flag)
 * led(led, flag)
+* button(flag)
 * ir(flag)
 * ext(flag)
 * acc(flag)
@@ -98,12 +100,19 @@ wiimote.connect("00:00:00:00:00", function(err) {
 * ir
 * status
 * nunchuk
+* classic
+* balance
+* motionplus
 
 ## Release information
 
 ### v0.1.0 (by DanielHuisman)
 * Cleaned up the project
 * Added nunchuk support
+* Added classic controller support
+* Added balance support
+* Added motion plus support
+* Added request status, but cwiid doesn't seem to do anything with it
 
 ### v0.0.8 (by danyocom):
 * Cleaned up the readme file
