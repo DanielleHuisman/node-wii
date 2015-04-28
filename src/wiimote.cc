@@ -1,10 +1,3 @@
-/*
- * Copyright 2011, Tim Branyen @tbranyen <tim@tabdeveloper.com>
- * Copyright 2012-2013, Andrew Brampton <bramp.net>
- * Dual licensed under the MIT and GPL licenses.
- *
- */
-
 #include <v8.h>
 #include <node.h>
 

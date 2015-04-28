@@ -7,6 +7,8 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 		console.error(err);
 	}
 
+	wiimote.led(1, true);
+
 	wiimote.rumble(true);
 	setTimeout(function() {
 		wiimote.rumble(false);
@@ -14,6 +16,10 @@ wiimote.connect("00:00:00:00:00:00", function(err) {
 
 	wiimote.ext(true);
 	wiimote.on("nunchuk", function(data) {
+		console.log(data);
+	});
+
+	wiimote.on("button", function(data) {
 		console.log(data);
 	});
 });

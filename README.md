@@ -84,7 +84,7 @@ wiimote.connect("00:00:00:00:00", function(err) {
 * connect(address, callback)
 * disconnect()
 * rumble(flag)
-* led(flag)
+* led(led, flag)
 * ir(flag)
 * ext(flag)
 * acc(flag)
