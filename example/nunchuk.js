@@ -1,14 +1,19 @@
-var wii = require( '../build/Release/nodewii.node' );
+var wii = require("../node-wii");
 
 var wiimote = new wii.WiiMote();
 
-wiimote.connect( '00:17:AB:39:42:B1', function( err ) {
-  console.log( err );
-  wiimote.rumble( true );
-  setTimeout(function() { wiimote.rumble( false ); }, 1000);
+wiimote.connect("00:00:00:00:00:00", function(err) {
+	if(err) {
+		console.error(err);
+	}
 
-  wiimote.ext( true );
-  wiimote.on( 'nunchuk', function( err, data ) {
-    console.log( data );
-  });
+	wiimote.rumble(true);
+	setTimeout(function() {
+		wiimote.rumble(false);
+	}, 1000);
+
+	wiimote.ext(true);
+	wiimote.on("nunchuk", function(data) {
+		console.log(data);
+	});
 });

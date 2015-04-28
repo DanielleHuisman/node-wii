@@ -1,28 +1,40 @@
 {
-  "name": "node-wii",
+  "name": "wii",
+  "version": "0.1.0",
   "description": "Node.js libcwiid asynchronous native bindings",
-  "version": "0.0.8",
-  "homepage": "https://github.com/danyocom/node-wii",
-  "author": "Tim Branyen <tim@tabdeveloper.com> (http://twitter.com/tbranyen)",
-  "contributors": [{
-    "name": "Andrew Brampton",
-    "email": "me@bramp.net"
-  },{
-    "name": "Dan Yocom",
-    "email": "dan.yocom.npmjs@gmail.com"
-  }],
-  "main": "node-wii.js",
+  "license": "ISC",
+  "author": "Daniel Huisman <danielhuisman.development@gmail.com> (https://github.com/DanielHuisman)",
+  "contributors": [
+    "Tim Branyen <tim@tabdeveloper.com> (https://github.com/tbranyen)",
+    "Andrew Brampton <me@bramp.net> (https://github.com/bramp)",
+    "Dan Yocom <dan.yocom.npmjs@gmail.com> (https://github.com/danyocom)"
+  ],
+  "main": "wii.js",
+  "keywords": [
+    "libcwiid",
+    "wii",
+    "wiimote",
+    "nunchuk",
+    "asynchronous",
+    "native",
+    "bindings"
+  ],
+  "homepage": "https://github.com/DanielHuisman/node-wii",
   "repository": {
     "type": "git",
-    "url": "git://github.com/danyocom/node-wii.git"
+    "url": "https://github.com/DanielHuisman/node-wii.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/DanielHuisman/node-wii/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.10.0",
+    "iojs": ">=1.0.0",
+    "npm": ">=2.0.0"
   },
   "directories": {
     "build": "./build"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "devDependencies": {
-  },
-  "license": "MIT/GPL"
+  }
 }
