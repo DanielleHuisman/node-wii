@@ -2,7 +2,7 @@
   "name": "wii",
   "version": "0.1.0",
   "description": "Node.js libcwiid asynchronous native bindings",
-  "license": "ISC",
+  "license": "GPL-2.0",
   "author": "Daniel Huisman <danielhuisman.development@gmail.com> (https://github.com/DanielHuisman)",
   "contributors": [
     "Tim Branyen <tim@tabdeveloper.com> (https://github.com/tbranyen)",
