@@ -2,6 +2,8 @@
 
 Wii provides asynchronous native bindings to the libcwiid C API.
 
+**NOTE:** This library currently only works with Node.js 0.10.x. See [issue #2](https://github.com/DanielHuisman/node-wii/issues/2) for more information.
+
 ## Contributors
 * Created by [Tim Branyen](https://github.com/tbranyen)
 * Modified by [Andrew Brampton](http://github.com/bramp)

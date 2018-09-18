@@ -27,9 +27,7 @@
   "bugs": {
     "url": "https://gitlab.com/DanielHuisman/node-wii/issues"
   },
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "devDependencies": {
     "express": "^4.12.3",
     "socket.io": "^1.3.5"
