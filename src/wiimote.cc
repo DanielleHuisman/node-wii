@@ -473,46 +473,49 @@ void WiiMote::New(const FunctionCallbackInfo<Value>& args) {
 }
 
 void WiiMote::Connect(const FunctionCallbackInfo<Value>& args) {
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
-  // Local<Function> callback;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  Local<Function> callback;
 
-  // HandleScope scope;
+  if(args.Length() == 0 || !args[0]->IsString()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "MAC address is required and must be a String.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsString()) {
-  //   return ThrowException(Exception::Error(String::New("MAC address is required and must be a String.")));
-  // }
+  if(args.Length() == 1 || !args[1]->IsFunction()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Callback is required and must be a Function.")));
+    return;
+  }
 
-  // if(args.Length() == 1 || !args[1]->IsFunction()) {
-  //   return ThrowException(Exception::Error(String::New("Callback is required and must be a Function.")));
-  // }
+  callback = Local<Function>::Cast(args[1]);
 
-  // callback = Local<Function>::Cast(args[1]);
+  connect_request* ar = new connect_request();
+  ar->wiimote = wiimote;
 
-  // connect_request* ar = new connect_request();
-  // ar->wiimote = wiimote;
+  String::Utf8Value mac(args[0]);
+  str2ba(*mac, &ar->mac); // TODO Validate the mac and throw an exception if invalid
 
-  // String::Utf8Value mac(args[0]);
-  // str2ba(*mac, &ar->mac); // TODO Validate the mac and throw an exception if invalid
+  ar->callback = Local<Function>::New(isolate, constructor);
 
-  // ar->callback = Persistent<Function>::New(callback);
+  wiimote->Ref();
 
-  // wiimote->Ref();
+  uv_work_t* req = new uv_work_t;
+  req->data = ar;
+  int r = uv_queue_work(uv_default_loop(), req, UV_Connect, UV_AfterConnect);
+  if (r != 0) {
 
-  // uv_work_t* req = new uv_work_t;
-  // req->data = ar;
-  // int r = uv_queue_work(uv_default_loop(), req, UV_Connect, UV_AfterConnect);
-  // if (r != 0) {
+    // TODO
+    // ar->callback.Dispose();
+    delete ar;
+    delete req;
 
-  //   ar->callback.Dispose();
-  //   delete ar;
-  //   delete req;
+    wiimote->Unref();
 
-  //   wiimote->Unref();
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Internal error: Failed to queue connect work")));
+    return;
+  }
 
-  //   return ThrowException(Exception::Error(String::New("Internal error: Failed to queue connect work")));
-  // }
-
-  // return Undefined();
+  args.GetReturnValue().SetUndefined();
 }
 
 void WiiMote::UV_Connect(uv_work_t* req) {
@@ -553,104 +556,101 @@ void WiiMote::UV_AfterConnect(uv_work_t* req, int status) {
 }
 
 void WiiMote::Disconnect(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
-  // return Integer::New(wiimote->Disconnect());
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Disconnect()));
 }
 
 void WiiMote::RequestStatus(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
-
-  // return Integer::New(wiimote->RequestStatus());
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->RequestStatus()));
 }
 
 void WiiMote::Rumble(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // bool on = args[0]->ToBoolean()->Value();
-
-  // return Integer::New(wiimote->Rumble(on));
+  bool on = args[0]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Rumble(on)));
 }
 
 void WiiMote::Led(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsNumber()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Index is required and must be a Number.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsNumber()) {
-  //   return ThrowException(Exception::Error(String::New("Index is required and must be a Number.")));
-  // }
+  if(args.Length() == 1 || !args[1]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 1 || !args[1]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // int index = args[0]->ToInteger()->Value();
-  // bool on = args[1]->ToBoolean()->Value();
-
-  // return Integer::New(wiimote->Led(index, on));
+  int index = args[0]->ToInteger()->Value();
+  bool on = args[1]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Led(index, on)));
 }
 
 void WiiMote::IrReporting(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // bool on = args[0]->ToBoolean()->Value();
-  // return Integer::New(wiimote->Reporting(CWIID_RPT_IR, on));
+  bool on = args[0]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Reporting(CWIID_RPT_IR, on)));
 }
 
 void WiiMote::AccReporting(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // bool on = args[0]->ToBoolean()->Value();
-  // return Integer::New(wiimote->Reporting(CWIID_RPT_ACC, on));
+  bool on = args[0]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Reporting(CWIID_RPT_ACC, on)));
 }
 
 void WiiMote::ExtReporting(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // bool on = args[0]->ToBoolean()->Value();
-  // return Integer::New(wiimote->Reporting(CWIID_RPT_EXT, on));
+  bool on = args[0]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Reporting(CWIID_RPT_EXT, on)));
 }
 
 void WiiMote::ButtonReporting(const FunctionCallbackInfo<Value>& args) {
-  // HandleScope scope;
+  Isolate* isolate = args.GetIsolate();
+  WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
 
-  // WiiMote* wiimote = ObjectWrap::Unwrap<WiiMote>(args.This());
+  if(args.Length() == 0 || !args[0]->IsBoolean()) {
+    isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "On state is required and must be a Boolean.")));
+    return;
+  }
 
-  // if(args.Length() == 0 || !args[0]->IsBoolean()) {
-  //   return ThrowException(Exception::Error(String::New("On state is required and must be a Boolean.")));
-  // }
-
-  // bool on = args[0]->ToBoolean()->Value();
-
-  // return Integer::New(wiimote->Reporting(CWIID_RPT_BTN, on));
+  bool on = args[0]->ToBoolean()->Value();
+  args.GetReturnValue().Set(Integer::New(isolate, wiimote->Reporting(CWIID_RPT_BTN, on)));
 }
 
 }

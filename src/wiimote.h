@@ -198,7 +198,7 @@ class WiiMote : public node::ObjectWrap {
       WiiMote* wiimote;
       bdaddr_t mac;
       int err;
-      v8::Persistent<v8::Function> callback;
+      v8::Local<v8::Function> callback;
     };
 
     /**

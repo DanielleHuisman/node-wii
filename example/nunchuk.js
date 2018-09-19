@@ -4,7 +4,7 @@ var wiimote = new wii.WiiMote();
 
 wiimote.connect("00:00:00:00:00:00", function(err) {
 	if(err) {
-		console.error(err);
+		console.error('Error:', err);
 	}
 
 	wiimote.led(1, true);
