@@ -2,9 +2,11 @@
 #define CONNECT_H
 
 #include <node.h>
+#include <node_object_wrap.h>
 
 #include <bluetooth/bluetooth.h>
 #include <cwiid.h>
+#include <uv.h>
 
 //#define ENABLE_DEBUG
 #ifdef ENABLE_DEBUG
@@ -19,14 +21,13 @@
   #define DUMP_BYTE_STREAM(STREAM, LENGTH)
 #endif
 
-using namespace v8;
-using namespace node;
+namespace wii {
 
 /**
  * Class: WiiMote
  *   Wrapper for libcwiid connect.
  */
-class WiiMote : public ObjectWrap {
+class WiiMote : public node::ObjectWrap {
   public:
     /**
      * Variable: ir_event
@@ -83,7 +84,7 @@ class WiiMote : public ObjectWrap {
      * Parameters:
      *   target - v8::Object the Node.js global module object
      */
-    static void Initialize(v8::Handle<v8::Object> target);
+    static void Initialize(v8::Local<v8::Object> target);
     /**
      * Function: Connect
      *   Accepts an address and creates a connection.
@@ -118,7 +119,7 @@ class WiiMote : public ObjectWrap {
      * Returns:
      *   v8::Object args.This()
      */
-    static v8::Handle<v8::Value> New(const v8::Arguments& args);
+    static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     /**
      * Function: Connect
@@ -129,17 +130,17 @@ class WiiMote : public ObjectWrap {
      * Returns:
      *   v8::Object args.This()
      */
-    static v8::Handle<v8::Value> Connect(const v8::Arguments& args);
+    static void Connect(const v8::FunctionCallbackInfo<v8::Value>& args);
     static void UV_Connect(uv_work_t* req);
     static void UV_AfterConnect(uv_work_t* req, int status);
 
-    static v8::Handle<v8::Value> Disconnect(const v8::Arguments& args);
+    static void Disconnect(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     // Callback from libcwiid's thread
     static void HandleMessages(cwiid_wiimote_t *, int, union cwiid_mesg [], struct timespec *);
 
     // Callback from Nodejs's thread which calls one of the Handle*Message methods
-    static void HandleMessagesAfter(uv_work_t *req, int status);
+    static void HandleMessagesAfter(uv_work_t* req, int status);
 
     // The following methods parse and emit events
     void HandleAccMessage    (struct timespec *ts, cwiid_acc_mesg * msg);
@@ -153,15 +154,16 @@ class WiiMote : public ObjectWrap {
     void HandleStatusMessage (struct timespec *ts, cwiid_status_mesg * msg);
 
     // The following methods turn things on and off
-    static v8::Handle<v8::Value> Rumble(const v8::Arguments& args);
-    static v8::Handle<v8::Value> Led(const v8::Arguments& args);
-    static v8::Handle<v8::Value> RequestStatus(const v8::Arguments& args);
-    static v8::Handle<v8::Value> IrReporting(const v8::Arguments& args);
-    static v8::Handle<v8::Value> AccReporting(const v8::Arguments& args);
-    static v8::Handle<v8::Value> ExtReporting(const v8::Arguments& args);
-    static v8::Handle<v8::Value> ButtonReporting(const v8::Arguments& args);
+    static void Rumble(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void Led(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void RequestStatus(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void IrReporting(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void AccReporting(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void ExtReporting(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void ButtonReporting(const v8::FunctionCallbackInfo<v8::Value>&  args);
 
   private:
+    static v8::Persistent<v8::Function> constructor;
 
     /**
      * The v8 instance for this object
@@ -210,5 +212,7 @@ class WiiMote : public ObjectWrap {
     };
 
 };
+
+}
 
 #endif

@@ -1,10 +1,16 @@
 #include <node.h>
-#include <v8.h>
 
-#include "../include/wiimote.h"
+#include "wiimote.h"
 
-void init(Handle<v8::Object> target) {
-	WiiMote::Initialize(target);
+namespace wii {
+
+using v8::Local;
+using v8::Object;
+
+void InitAll(v8::Local<v8::Object> exports) {
+	WiiMote::Initialize(exports);
 }
 
-NODE_MODULE(wii, init);
+NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
+
+}
