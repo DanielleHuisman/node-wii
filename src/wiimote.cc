@@ -495,7 +495,7 @@ void WiiMote::Connect(const FunctionCallbackInfo<Value>& args) {
   String::Utf8Value mac(args[0]);
   str2ba(*mac, &ar->mac); // TODO Validate the mac and throw an exception if invalid
 
-  ar->callback = Local<Function>::New(isolate, constructor);
+  ar->callback = Local<Function>::New(isolate, callback);
 
   wiimote->Ref();
 
